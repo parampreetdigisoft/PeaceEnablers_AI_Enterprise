@@ -1,0 +1,16 @@
+[project]
+name = "pem-aevum-ai-service"
+version = "1.0.0"
+description = "PEM Aevum FastAPI AI layer — RAG orchestration, job coalescing, and LLM routing."
+readme = "README.md"
+requires-python = ">=3.12"
+authors = [{ name = "PEM Aevum" }]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"

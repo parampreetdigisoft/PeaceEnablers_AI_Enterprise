@@ -1,0 +1,36 @@
+# Role information is consumed from headers, not issued here.
+# The ASP.NET Core API is the identity source of truth.
+version: 1
+
+headers:
+  api_key: X-API-Key
+  user_id: X-User-Id
+  roles: X-User-Roles
+  email: X-User-Email
+
+# Existing .NET callers only send X-API-Key. Treat missing roles as Analyst
+# so Phase 1 does not break the current integration.
+legacy_default_role: Analyst
+
+roles:
+  Admin:
+    description: Platform operators — observability, cancel, health internals
+  Analyst:
+    description: Evaluation and chat callers
+  Viewer:
+    description: Read-only job status
+
+# Endpoint groups → allowed roles. Health/docs stay public (no API key).
+policies:
+  public:
+    - health
+    - docs
+  analyst:
+    - evaluation
+    - chat
+    - rag
+    - jobs_read
+  admin:
+    - admin
+    - jobs_cancel
+    - jobs_list_all

@@ -1,0 +1,56 @@
+# Job coalescing — one execution per resource, not per HTTP request.
+# Change granularity here; do not change Python code.
+version: 1
+enabled: true
+
+# Default when a resource type does not override.
+# country | country_pillar | country_pillar_question
+default_granularity: country_pillar_question
+
+# Duplicate callers attach while the original job is in these states.
+attach_while_statuses:
+  - queued
+  - running
+
+# Reuse a completed result for this many seconds (0 = never reuse completed).
+# Prevents a stampede of identical follow-up clicks from re-calling the LLM.
+ttl_seconds:
+  completed: 120
+  failed: 0
+  cancelled: 0
+
+max_attached_users: 500
+
+# Per-resource-type overrides. Keys are built by jobs/key_builder.py.
+resource_types:
+  evaluation_full:
+    granularity: country
+    include_year: true
+  evaluation_country:
+    granularity: country
+    include_year: true
+  evaluation_pillars:
+    granularity: country_pillar
+    include_year: true
+  evaluation_questions:
+    granularity: country_pillar_question
+    include_year: true
+  evaluation_question:
+    granularity: country_pillar_question
+    include_year: true
+  evaluation_immediate:
+    granularity: country
+    include_year: true
+  chat:
+    granularity: country_pillar
+    include_question_text: true
+  chat_global:
+    granularity: global
+    include_question_text: true
+  chat_comparison:
+    granularity: countries
+    include_question_text: true
+  document_ingest:
+    granularity: document
+  document_delete:
+    granularity: document

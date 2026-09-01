@@ -1,0 +1,31 @@
+# Request/activity logging. Application writes append-only; operators should
+# treat rotated files as read-only. Phase 5 will add WORM / hash-chaining.
+version: 1
+
+file:
+  path: logs/requests.log
+  error_path: logs/errors.log
+  encoding: utf-8
+  max_bytes: 10485760
+  backup_count: 14
+  level: INFO
+
+console:
+  enabled: true
+  level: INFO
+
+fields:
+  timestamp: true
+  method: true
+  endpoint: true
+  user_id: true
+  roles: true
+  status_code: true
+  duration_ms: true
+  job_id: true
+  error_stack: true
+
+# Future (Phase 5 / enterprise PDF §7): immutable WORM, 7-year retention,
+# cryptographic hash chaining. Do not implement here.
+immutable: false
+retention_days: 2555
