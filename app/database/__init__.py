@@ -1,1 +1,1 @@
-"""Database adapters: SQL Server (Phase 1), vector (Phase 1 RAG), graph (Phase 2 stub)."""
+"""Database adapters: SQL Server (Phase 1), graph (Phase 2 stub). Vector store: app.vectorstores."""

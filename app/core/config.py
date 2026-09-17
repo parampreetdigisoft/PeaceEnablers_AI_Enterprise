@@ -55,8 +55,17 @@ class Settings(BaseSettings):
     db_password: str = ""
     db_odbc_driver: str = "ODBC Driver 17 for SQL Server"
 
+    vector_db: str = "chroma"
     vector_persist_path: str = "./chroma_store"
     vector_collection_prefix: str = "pem"
+    vector_embedding_model: str = "all-MiniLM-L6-v2"
+    vector_embedding_normalize: bool = False
+
+    # Pinecone — unused while VECTOR_DB=chroma. Fill these before go-live.
+    pinecone_api_key: str = ""
+    pinecone_index_name: str = "pem-vectors"
+    pinecone_cloud: str = "aws"
+    pinecone_region: str = "us-east-1"
 
     neo4j_uri: str = "bolt://localhost:7687"
     neo4j_user: str = "neo4j"

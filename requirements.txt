@@ -6,139 +6,142 @@
 # pip install chromadb sentence-transformers pymupdf python-docx
 # python -m pip freeze | Out-File -Encoding utf8 requirements.txt
 
+# Live vector DB (Pinecone) — uncomment and install when VECTOR_DB=pinecone
+# pinecone>=5.4.0
 
 
 
-aiohappyeyeballs==2.7.1
-aiohttp==3.14.3
-aiosignal==1.4.0
-annotated-doc==0.0.5
-annotated-types==0.8.0
-anyio==4.14.2
-attrs==26.1.0
-bcrypt==5.0.0
-build==1.5.0
-certifi==2026.7.22
-charset-normalizer==3.5.1
-chromadb==1.5.9
-click==8.4.2
-colorama==0.4.6
-defusedxml==0.7.1
-distro==1.9.0
-durationpy==0.10
-fastapi==0.141.1
-filelock==3.32.4
-flatbuffers==25.12.19
-frozenlist==1.8.0
-fsspec==2026.7.0
-googleapis-common-protos==1.75.2
-greenlet==3.5.5
-grpcio==1.83.0
-h11==0.16.0
-hf-xet==1.6.0
-httpcore==1.0.9
-httpcore2==2.12.0
-httptools==0.8.0
-httpx==0.28.1
-httpx2==2.12.0
-huggingface_hub==1.28.0
-idna==3.19
-importlib_resources==7.1.0
-Jinja2==3.1.6
-jiter==0.16.0
-joblib==1.5.3
-jsonpatch==1.33
-jsonpointer==3.1.1
-jsonschema==4.26.0
-jsonschema-specifications==2025.9.1
-kubernetes==36.0.3
-langchain==1.3.17
-langchain-core==1.6.0
-langchain-openai==1.6.0
-langchain-protocol==0.0.18
-langgraph==1.2.11
-langgraph-checkpoint==4.2.0
-langgraph-prebuilt==1.1.0
-langgraph-sdk==0.4.3
-langsmith==0.11.1
-lxml==6.1.2
-markdown-it-py==4.2.0
-MarkupSafe==3.0.3
-mdurl==0.1.2
-mmh3==5.3.0
-mpmath==1.3.0
-multidict==6.7.1
-narwhals==2.25.0
-networkx==3.6.1
-nltk==3.10.3
-numpy==2.5.2
-oauthlib==3.3.1
-onnxruntime==1.29.0
-openai==3.3.1
-opentelemetry-api==1.44.0
-opentelemetry-exporter-otlp-proto-common==1.44.0
-opentelemetry-exporter-otlp-proto-grpc==1.44.0
-opentelemetry-proto==1.44.0
-opentelemetry-sdk==1.44.0
-opentelemetry-semantic-conventions==0.65b0
-orjson==3.12.0
-ormsgpack==1.12.2
-overrides==7.7.0
-packaging==26.3
-pandas==3.0.5
-propcache==0.5.2
-protobuf==7.36.0
-pybase64==1.5.0
-pydantic==2.13.4
-pydantic-settings==2.15.0
-pydantic_core==2.46.4
-Pygments==2.21.0
-pymupdf==1.28.2
-pyodbc==5.3.0
-PyPika==0.51.1
-pyproject_hooks==1.2.0
-python-dateutil==2.9.0.post0
-python-docx==1.2.0
-python-dotenv==1.2.3
-python-multipart==0.0.32
-PyYAML==6.0.3
-referencing==0.37.0
-regex==2026.7.19
-requests==2.34.2
-requests-oauthlib==2.0.0
-requests-toolbelt==1.0.0
-rich==15.0.0
-rpds-py==2026.6.3
-safetensors==0.8.0
-scikit-learn==1.9.0
-scipy==1.18.1
-sentence-transformers==6.0.0
-setuptools==84.0.0
-shellingham==1.5.4
-six==1.17.0
-sniffio==1.3.1
-SQLAlchemy==2.0.52
-sqlparse==0.6.0
-starlette==1.6.0
-sympy==1.14.0
-tenacity==9.1.4
-threadpoolctl==3.6.0
-tiktoken==0.14.0
-tokenizers==0.23.1
-torch==2.13.0
-tqdm==4.70.0
-transformers==5.16.1
-truststore==0.10.4
-typer==0.27.1
-typing-inspection==0.4.4
-typing_extensions==4.16.0
-tzdata==2026.3
-urllib3==2.7.0
-uuid_utils==0.17.0
-uvicorn==0.52.4
-watchfiles==1.2.0
-websocket-client==1.9.0
-websockets==16.1.1
-xxhash==4.0.1
-yarl==1.24.5
-zstandard==0.25.0
+
+aiohappyeyeballs==2.7.1  # Improves async network connections by quickly trying multiple IP addresses
+aiohttp==3.14.3  # Asynchronous HTTP client/server for making non-blocking web requests
+aiosignal==1.4.0  # Provides async signal support used by aiohttp
+annotated-doc==0.0.5  # Generates documentation metadata from Python type annotations
+annotated-types==0.8.0  # Provides metadata annotations used with type hints and Pydantic
+anyio==4.14.2  # Provides asynchronous concurrency support for FastAPI and other async applications
+attrs==26.1.0  # Provides reusable classes and attribute-based data structures
+bcrypt==5.0.0  # Secure password hashing and verification
+build==1.5.0  # Builds Python packages from pyproject.toml
+certifi==2026.7.22  # Provides trusted SSL/TLS certificates for HTTPS connections
+charset-normalizer==3.5.1  # Detects and normalizes text character encodings
+chromadb==1.5.9  # Vector database used to store and search document embeddings
+click==8.4.2  # Command-line interface framework used by Python applications
+colorama==0.4.6  # Enables colored terminal output on Windows
+defusedxml==0.7.1  # Safely parses XML while protecting against XML-based attacks
+distro==1.9.0  # Detects Linux distribution information
+durationpy==0.10  # Parses and handles Kubernetes-style duration values
+fastapi==0.141.1  # Web framework used to build REST APIs and AI service endpoints
+filelock==3.32.4  # Provides file-based locking to prevent concurrent file access conflicts
+flatbuffers==25.12.19  # Serialization library used by ML and ONNX-related packages
+frozenlist==1.8.0  # Provides immutable list structures used by async libraries
+fsspec==2026.7.0  # Provides a unified interface for accessing local and remote filesystems
+googleapis-common-protos==1.75.2  # Common protocol definitions used by Google APIs and gRPC
+greenlet==3.5.5  # Provides lightweight concurrent execution used by SQLAlchemy
+grpcio==1.83.0  # Implements gRPC communication used by various APIs and ML services
+h11==0.16.0  # HTTP/1.1 protocol implementation used by HTTP clients and servers
+hf-xet==1.6.0  # Provides optimized file transfer support for Hugging Face Hub
+httpcore==1.0.9  # Low-level HTTP networking library used by httpx
+httpcore2==2.12.0  # Alternative HTTP core implementation for async HTTP communication
+httptools==0.8.0  # High-performance HTTP parsing used by Uvicorn
+httpx==0.28.1  # HTTP client used for making synchronous and asynchronous API requests
+httpx2==2.12.0  # Extended HTTP client functionality for HTTP communication
+huggingface_hub==1.28.0  # Downloads and manages AI/ML models from Hugging Face
+idna==3.19  # Handles internationalized domain names in URLs
+importlib_resources==7.1.0  # Provides access to package resources across Python versions
+Jinja2==3.1.6  # Template engine used for generating dynamic HTML/text content
+jiter==0.16.0  # High-performance JSON and data parsing used by OpenAI-related libraries
+joblib==1.5.3  # Efficiently saves models and handles parallel processing
+jsonpatch==1.33  # Applies JSON Patch operations to JSON documents
+jsonpointer==3.1.1  # Resolves references to specific locations inside JSON documents
+jsonschema==4.26.0  # Validates data against JSON Schema definitions
+jsonschema-specifications==2025.9.1  # Provides standard JSON Schema specifications
+kubernetes==36.0.3  # Provides Python client functionality for Kubernetes APIs
+langchain==1.3.17  # Framework for building LLM and AI-powered applications
+langchain-core==1.6.0  # Core abstractions and components used by LangChain
+langchain-openai==1.6.0  # Integrates OpenAI models and APIs with LangChain
+langchain-protocol==0.0.18  # Provides protocol definitions for LangChain components
+langgraph==1.2.11  # Builds stateful, multi-step AI workflows and agent graphs
+langgraph-checkpoint==4.2.0  # Stores and restores LangGraph workflow state
+langgraph-prebuilt==1.1.0  # Provides prebuilt components for LangGraph applications
+langgraph-sdk==0.4.3  # SDK for communicating with LangGraph services
+langsmith==0.11.1  # Provides tracing, monitoring, debugging, and evaluation for LangChain applications
+lxml==6.1.2  # Fast XML and HTML parsing and processing
+markdown-it-py==4.2.0  # Parses Markdown text into structured content
+MarkupSafe==3.0.3  # Safely escapes strings used in HTML templates
+mdurl==0.1.2  # Parses and handles URLs inside Markdown
+mmh3==5.3.0  # Provides fast MurmurHash3 hashing, commonly used for efficient indexing
+mpmath==1.3.0  # Provides arbitrary-precision mathematical calculations
+multidict==6.7.1  # Provides dictionary structures supporting multiple values per key
+narwhals==2.25.0  # Provides dataframe compatibility across different dataframe libraries
+networkx==3.6.1  # Creates and analyzes graphs and network structures
+nltk==3.10.3  # Natural language processing toolkit for text processing and analysis
+numpy==2.5.2  # Provides arrays and numerical computing functionality for AI and ML
+oauthlib==3.3.1  # Implements OAuth authentication and authorization functionality
+onnxruntime==1.29.0  # Runs machine learning models in ONNX format efficiently
+openai==3.3.1  # Provides access to OpenAI APIs and AI models
+opentelemetry-api==1.44.0  # Provides APIs for application observability and tracing
+opentelemetry-exporter-otlp-proto-common==1.44.0  # Common OTLP protocol components for telemetry export
+opentelemetry-exporter-otlp-proto-grpc==1.44.0  # Exports telemetry data using OTLP over gRPC
+opentelemetry-proto==1.44.0  # Protocol definitions for OpenTelemetry telemetry data
+opentelemetry-sdk==1.44.0  # SDK for collecting application metrics, traces, and telemetry
+opentelemetry-semantic-conventions==0.65b0  # Standard naming conventions for OpenTelemetry telemetry
+orjson==3.12.0  # High-performance JSON serialization and deserialization
+ormsgpack==1.12.0  # Fast MessagePack serialization used by some AI/API libraries
+overrides==7.7.0  # Provides a decorator for safely overriding inherited methods
+packaging==26.3  # Parses and handles Python package versions and dependencies
+pandas==3.0.5  # Data analysis and tabular data processing
+propcache==0.5.2  # Provides property caching functionality used by async libraries
+protobuf==7.36.0  # Protocol Buffers serialization used by gRPC and many AI services
+pybase64==1.5.0  # Fast Base64 encoding and decoding
+pydantic==2.13.4  # Data validation and request/response models for FastAPI
+pydantic-settings==2.15.0  # Loads application configuration from environment/settings
+pydantic_core==2.46.4  # Core validation engine used by Pydantic
+Pygments==2.21.0  # Syntax highlighting for documentation and terminal output
+pymupdf==1.28.2  # Reads, extracts, and processes text/content from PDF files
+pyodbc==5.3.0  # Connects Python applications to SQL Server and other ODBC databases
+PyPika==0.51.1  # Builds SQL queries programmatically
+pyproject_hooks==1.2.0  # Provides build-system hooks for Python package building
+python-dateutil==2.9.0.post0  # Handles date and time calculations and parsing
+python-docx==1.2.0  # Creates and reads Microsoft Word DOCX documents
+python-dotenv==1.2.3  # Loads environment variables from .env files
+python-multipart==0.0.32  # Handles multipart/form-data and file uploads in FastAPI
+PyYAML==6.0.3  # Reads and writes YAML configuration files
+referencing==0.37.0  # Resolves references used by JSON Schema
+regex==2026.7.19  # Advanced regular expression support for text processing
+requests==2.34.2  # Makes HTTP requests to external APIs and services
+requests-oauthlib==2.0.0  # Adds OAuth authentication support to Requests
+requests-toolbelt==1.0.0  # Provides additional utilities for Python HTTP requests
+rich==15.0.0  # Creates rich formatted terminal output, logs, tables, and progress displays
+rpds-py==0.27.0  # High-performance persistent data structures used by JSON Schema libraries
+safetensors==0.8.0  # Safely stores and loads machine learning model tensors
+scikit-learn==1.9.0  # Machine learning algorithms and utilities such as similarity and preprocessing
+scipy==1.18.1  # Scientific computing and mathematical functions used by ML libraries
+sentence-transformers==6.0.0  # Generates text embeddings for semantic search and vector databases
+setuptools==84.0.0  # Python package installation and build utilities
+shellingham==1.5.4  # Detects the current shell environment for CLI applications
+six==1.17.0  # Compatibility utilities for Python 2/3 related dependencies
+sniffio==1.3.1  # Detects whether code is running in an async environment
+SQLAlchemy==2.0.52  # Python SQL toolkit and ORM for database operations
+sqlparse==0.6.0  # Parses and formats SQL queries
+starlette==1.6.0  # Lightweight ASGI framework used by FastAPI for routing, middleware, requests, responses, and web application functionality
+sympy==1.14.0  # Symbolic mathematics and algebra calculations
+tenacity==9.1.4  # Provides retry mechanisms for failed API/network operations
+threadpoolctl==3.6.0  # Controls the number of threads used by numerical libraries
+tiktoken==0.14.0  # Tokenizes text for OpenAI and other LLM applications
+tokenizers==0.23.1  # Fast tokenization library used by Transformers
+torch==2.13.0  # Deep learning framework used by AI/ML models
+tqdm==4.70.0  # Displays progress bars for long-running operations
+transformers==5.16.1  # Provides pretrained transformer-based AI/NLP models
+truststore==0.10.4  # Uses the operating system's trusted SSL certificate store
+typer==0.27.1  # Builds command-line interfaces using Python type hints
+typing-inspection==0.4.4  # Inspects Python typing information at runtime
+typing_extensions==4.16.0  # Provides additional type hints and typing features
+tzdata==2026.3  # Provides timezone database information
+urllib3==2.7.0  # Low-level HTTP connection and request handling
+uuid_utils==0.17.0  # Generates and handles UUID values efficiently
+uvicorn==0.52.4  # ASGI server used to run FastAPI applications
+watchfiles==1.2.0  # Monitors file changes for development auto-reload
+websocket-client==1.9.0  # Provides WebSocket client functionality
+websockets==16.1.1  # Provides WebSocket protocol support for real-time communication
+xxhash==4.0.0  # Provides very fast non-cryptographic hashing
+yarl==1.24.5  # Provides URL parsing and handling for asynchronous HTTP libraries
+zstandard==0.25.0  # Provides fast Zstandard compression and decompression for data

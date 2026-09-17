@@ -6,11 +6,12 @@ import uuid
 from pathlib import Path
 
 from app.core.config import settings
-from app.database.vector import get_vector_store
 from app.jobs.key_builder import build_key
 from app.jobs.manager import job_manager
 from app.models.job import Job
 from app.repositories.document_repository import document_repository
+from app.services.embedding_service import get_embedding_service
+from app.vectorstores.factory import get_vector_store
 
 
 def _read_text(path: str, file_type: str | None) -> str:
@@ -82,10 +83,12 @@ class DocumentService:
             store = get_vector_store()
             global_level = str(doc.get("DocumentLevel") or "").lower() == "global"
             name = store.collection_name(country_id=country_id, global_docs=global_level)
+            texts = [r["chunk_text"] for r in records]
             store.upsert(
                 name,
                 ids=[r["chunk_id"] for r in records],
-                documents=[r["chunk_text"] for r in records],
+                documents=texts,
+                embeddings=get_embedding_service().embed_texts(texts),
                 metadatas=[
                     {
                         k: v

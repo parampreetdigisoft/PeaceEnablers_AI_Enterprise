@@ -5,7 +5,7 @@ from __future__ import annotations
 from app.core.config import settings
 from app.database.connection import sql_engine
 from app.database.graph import graph_store
-from app.database.vector import get_vector_store
+from app.vectorstores.factory import get_vector_store
 from app.jobs.manager import job_manager
 from app.jobs.registry import registry
 from app.llm.router import llm_router
@@ -20,7 +20,11 @@ class AdminService:
         return {
             "status": "healthy" if sql_ok else "degraded",
             "sql_server": {"connected": sql_ok, "database": settings.db_name},
-            "vector_db": {"connected": vector_ok, "path": settings.vector_persist_path},
+            "vector_db": {
+                "connected": vector_ok,
+                "backend": settings.vector_db,
+                "path": settings.vector_persist_path,
+            },
             "graph_db": graph_store.healthy(),
             "llm": {
                 "enabled_providers": llm_router.enabled_providers(),
