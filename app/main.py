@@ -22,6 +22,7 @@ from app.api.routes.rag import router as rag_router
 from app.core.config import settings
 from app.core.exceptions import AppError
 from app.core.logging import get_audit_logger, setup_logging
+from app.middleware.ip_allowlist import IpAllowlistMiddleware
 from app.middleware.request_logging import RequestLoggingMiddleware
 from app.middleware.user_context import UserContextMiddleware
 
@@ -34,6 +35,16 @@ api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("PEM Aevum AI service starting")
+    if settings.allowed_caller_ips.strip():
+        logger.info(
+            "IP allowlist enabled (%s entries)",
+            len([p for p in settings.allowed_caller_ips.split(",") if p.strip()]),
+        )
+    else:
+        logger.warning(
+            "ALLOWED_CALLER_IPS is empty — all caller IPs are accepted. "
+            "Set production ASP.NET host IPs before go-live."
+        )
     yield
     logger.info("PEM Aevum AI service shutting down")
 
@@ -42,7 +53,8 @@ app = FastAPI(
     title="PEM Aevum AI Service",
     description=(
         "AI layer for PEM Aevum. Identity is owned by the ASP.NET Core API. "
-        "Pass X-API-Key, X-User-Id, and X-User-Roles on every call."
+        "Pass X-API-Key, X-User-Id, and X-User-Roles on every call. "
+        "Caller IP must be listed in ALLOWED_CALLER_IPS."
     ),
     version="1.0.0",
     docs_url=None,
@@ -50,9 +62,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+# Last added = outermost (runs first). IP allowlist before auth/context.
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 app.add_middleware(RequestLoggingMiddleware)
 app.add_middleware(UserContextMiddleware)
+app.add_middleware(IpAllowlistMiddleware)
 
 
 def custom_openapi():

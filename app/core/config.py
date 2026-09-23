@@ -48,6 +48,16 @@ class Settings(BaseSettings):
     # Accept the legacy env name from PeaceEnablers_AI_Service
     application_auth_api_key_legacy: str = Field(default="", alias="Application_Auth_API_KEY")
 
+    # Comma-separated ASP.NET Web API host IPs allowed to call this service.
+    # Empty = allow all (local/dev). Example: 127.0.0.1,::1,10.0.0.15
+    allowed_caller_ips: str = Field(default="", alias="ALLOWED_CALLER_IPS")
+    # When true, /health /docs are also IP-restricted.
+    allowed_caller_protect_public: bool = Field(default=False, alias="ALLOWED_CALLER_IPS_PROTECT_PUBLIC")
+    # When true, use first X-Forwarded-For hop (only if Python sits behind a trusted proxy).
+    allowed_caller_trust_forwarded_for: bool = Field(
+        default=False, alias="ALLOWED_CALLER_TRUST_FORWARDED_FOR"
+    )
+
     db_server: str = "localhost\\SQLEXPRESS"
     db_name: str = "PeaceEnablerDB"
     db_use_windows_auth: bool = True

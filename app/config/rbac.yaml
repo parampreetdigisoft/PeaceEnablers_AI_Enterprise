@@ -8,8 +8,12 @@ headers:
   roles: X-User-Roles
   email: X-User-Email
 
-# Existing .NET callers only send X-API-Key. Treat missing roles as Analyst
-# so Phase 1 does not break the current integration.
+# Required on every protected call from AiGateway:
+#   X-API-Key, X-User-Id, X-User-Roles
+# Chat (JWT): real user id + role from claims
+# Background jobs: X-User-Id=system, X-User-Roles=Admin
+
+# Existing .NET callers that omit roles fall back here (prefer explicit headers).
 legacy_default_role: Analyst
 
 roles:
@@ -19,8 +23,13 @@ roles:
     description: Evaluation and chat callers
   Viewer:
     description: Read-only job status
+  CountryUser:
+    description: Portal country users (chat)
+  Evaluator:
+    description: Evaluators
 
 # Endpoint groups → allowed roles. Health/docs stay public (no API key).
+# Caller IP must also be in ALLOWED_CALLER_IPS (.env).
 policies:
   public:
     - health

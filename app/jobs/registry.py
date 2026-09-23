@@ -47,13 +47,21 @@ class JobRegistry:
                 self._by_key[job.coalescing_key] = job.id
             return job.model_copy(deep=True)
 
-    async def attach_user(self, job_id: str, user_id: str) -> Job | None:
+    async def attach_user(
+        self, job_id: str, user_id: str, roles: list[str] | None = None
+    ) -> Job | None:
         async with self._lock:
             job = self._by_id.get(job_id)
             if job is None:
                 return None
             if user_id not in job.attached_user_ids:
                 job.attached_user_ids.append(user_id)
+            if roles:
+                existing = list(job.attached_user_roles.get(user_id) or [])
+                for role in roles:
+                    if role and role not in existing:
+                        existing.append(role)
+                job.attached_user_roles[user_id] = existing
             return job.model_copy(deep=True)
 
     async def update(self, job_id: str, **fields) -> Job | None:

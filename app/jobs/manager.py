@@ -72,7 +72,9 @@ class JobManager:
         async with self._start_lock:
             existing = await registry.get_by_key(coalescing_key)
             if existing and existing.status in self._attach_statuses():
-                attached = await registry.attach_user(existing.id, user.user_id)
+                attached = await registry.attach_user(
+                    existing.id, user.user_id, list(user.roles)
+                )
                 assert attached is not None
                 attached.attached = True
                 logger.info(
@@ -83,7 +85,9 @@ class JobManager:
                 )
                 job = attached
             elif existing and existing.status == JobStatus.COMPLETED and self._within_ttl(existing, "completed"):
-                attached = await registry.attach_user(existing.id, user.user_id)
+                attached = await registry.attach_user(
+                    existing.id, user.user_id, list(user.roles)
+                )
                 assert attached is not None
                 attached.attached = True
                 logger.info("Reused completed job=%s key=%s (TTL)", attached.id, coalescing_key)
@@ -100,6 +104,7 @@ class JobManager:
                     year=year,
                     purpose=purpose,
                     user_id=user.user_id,
+                    user_roles=list(user.roles),
                 )
 
         if wait:
@@ -117,6 +122,7 @@ class JobManager:
 
     async def _create_and_schedule(self, **kwargs) -> Job:
         user_id = kwargs.pop("user_id")
+        user_roles = kwargs.pop("user_roles", None) or []
         executor: Executor = kwargs.pop("executor")
         job = Job(
             coalescing_key=kwargs["coalescing_key"],
@@ -127,7 +133,9 @@ class JobManager:
             document_id=kwargs.get("document_id"),
             year=kwargs.get("year"),
             attached_user_ids=[user_id],
+            attached_user_roles={user_id: list(user_roles)} if user_roles else {},
             created_by=user_id,
+            created_by_roles=list(user_roles),
             purpose=kwargs.get("purpose"),
             status=JobStatus.QUEUED,
         )
@@ -138,7 +146,12 @@ class JobManager:
 
     async def _start_new(self, *, wait: bool, executor: Executor, **kwargs) -> Job:
         user = current_user()
-        job = await self._create_and_schedule(executor=executor, user_id=user.user_id, **kwargs)
+        job = await self._create_and_schedule(
+            executor=executor,
+            user_id=user.user_id,
+            user_roles=list(user.roles),
+            **kwargs,
+        )
         if wait:
             return await self.wait_for(job.id)
         return job

@@ -2,13 +2,19 @@
 
 from __future__ import annotations
 
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 
 from app.core.config import settings
-from app.core.security import UserContext, parse_roles, set_user_context, reset_user_context, validate_api_key
 from app.core.exceptions import UnauthorizedError
-from fastapi.responses import JSONResponse
+from app.core.security import (
+    UserContext,
+    parse_roles,
+    reset_user_context,
+    set_user_context,
+    validate_api_key,
+)
 
 
 PUBLIC_PREFIXES = ("/health", "/docs", "/redoc", "/openapi.json")
@@ -35,12 +41,42 @@ class UserContextMiddleware(BaseHTTPMiddleware):
                     content={"error": "Unauthorized", "message": exc.message},
                 )
 
-        ctx = UserContext(
-            user_id=request.headers.get(user_id_header) or "system",
-            roles=parse_roles(request.headers.get(roles_header)),
-            email=request.headers.get(email_header),
-            api_key_valid=not is_public,
-        )
+            user_id = (request.headers.get(user_id_header) or "").strip()
+            roles_raw = (request.headers.get(roles_header) or "").strip()
+
+            # Required for all protected routes (chat + jobs). Background callers
+            # must send system identity from .NET AiGateway.
+            if not user_id:
+                return JSONResponse(
+                    status_code=401,
+                    content={
+                        "error": "Unauthorized",
+                        "message": f"Missing required header {user_id_header}.",
+                    },
+                )
+            if not roles_raw:
+                return JSONResponse(
+                    status_code=401,
+                    content={
+                        "error": "Unauthorized",
+                        "message": f"Missing required header {roles_header}.",
+                    },
+                )
+
+            ctx = UserContext(
+                user_id=user_id,
+                roles=parse_roles(roles_raw),
+                email=(request.headers.get(email_header) or None),
+                api_key_valid=True,
+            )
+        else:
+            ctx = UserContext(
+                user_id="anonymous",
+                roles=(),
+                email=None,
+                api_key_valid=False,
+            )
+
         request.state.user = ctx
         token = set_user_context(ctx)
         try:

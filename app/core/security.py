@@ -3,19 +3,21 @@ Consume identity from the .NET API. This service never issues tokens.
 
 Headers (configurable in app/config/rbac.yaml):
   X-API-Key      service-to-service shared secret
-  X-User-Id      calling user (logged on every request and every job)
-  X-User-Roles   comma-separated: Admin, Analyst, Viewer
+  X-User-Id      calling user from JWT (or "system" for background jobs)
+  X-User-Roles   comma-separated roles from JWT (or Admin for background)
   X-User-Email   optional
+
+Network:
+  ALLOWED_CALLER_IPS — only listed ASP.NET host IPs may call this service
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from contextvars import ContextVar
-from typing import Iterable
 
 from app.core.config import settings
-from app.core.exceptions import ForbiddenError, UnauthorizedError
+from app.core.exceptions import UnauthorizedError
 
 user_context_var: ContextVar["UserContext | None"] = ContextVar("user_context", default=None)
 
