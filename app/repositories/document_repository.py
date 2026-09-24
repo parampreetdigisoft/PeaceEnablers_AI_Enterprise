@@ -9,15 +9,37 @@ from app.database.session import db_session
 
 class DocumentRepository:
     async def get_document(self, country_doc_id: int) -> dict[str, Any] | None:
-        rows = await db_session.fetch_dicts(
-            """
-            SELECT CountryDocumentID, CountryID, FilePath, FileType, PillarID, DocumentLevel
-            FROM CountryDocuments
-            WHERE IsDeleted = 0 AND CountryDocumentID = ?
-            """,
-            (country_doc_id,),
-        )
+        params = (country_doc_id,)
+        try:
+            rows = await db_session.fetch_dicts(
+                """
+                SELECT CountryDocumentID, CountryID, FilePath, FileType, PillarID, DocumentLevel,
+                       Classification, IngestedAt, LegalHold
+                FROM CountryDocuments
+                WHERE IsDeleted = 0 AND CountryDocumentID = ?
+                """,
+                params,
+            )
+        except Exception:
+            rows = await db_session.fetch_dicts(
+                """
+                SELECT CountryDocumentID, CountryID, FilePath, FileType, PillarID, DocumentLevel
+                FROM CountryDocuments
+                WHERE IsDeleted = 0 AND CountryDocumentID = ?
+                """,
+                params,
+            )
         return rows[0] if rows else None
+
+    async def list_countries_with_documents(self) -> list[dict[str, Any]]:
+        return await db_session.fetch_dicts(
+            """
+            SELECT DISTINCT d.CountryID, c.CountryName
+            FROM CountryDocuments d
+            LEFT JOIN Countries c ON c.CountryID = d.CountryID
+            WHERE d.IsDeleted = 0 AND d.CountryID IS NOT NULL
+            """
+        )
 
     async def save_toc_section(
         self,

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 
 from app.core.config import settings
@@ -84,22 +85,23 @@ class DocumentService:
             global_level = str(doc.get("DocumentLevel") or "").lower() == "global"
             name = store.collection_name(country_id=country_id, global_docs=global_level)
             texts = [r["chunk_text"] for r in records]
+            ingested = doc.get("IngestedAt") or datetime.now(timezone.utc)
+            ingested_text = ingested.isoformat() if hasattr(ingested, "isoformat") else str(ingested)
+            metadata = {
+                "country_doc_id": country_doc_id,
+                "country_id": country_id or 0,
+                "pillar_id": pillar_id or 0,
+                "classification": str(doc.get("Classification") or "Internal"),
+                "ingested_at": ingested_text,
+                "embedding_model": settings.vector_embedding_model,
+                "document_level": str(doc.get("DocumentLevel") or ""),
+            }
             store.upsert(
                 name,
                 ids=[r["chunk_id"] for r in records],
                 documents=texts,
                 embeddings=get_embedding_service().embed_texts(texts),
-                metadatas=[
-                    {
-                        k: v
-                        for k, v in {
-                            "country_doc_id": country_doc_id,
-                            "country_id": country_id or 0,
-                            "pillar_id": pillar_id or 0,
-                        }.items()
-                    }
-                    for _ in records
-                ],
+                metadatas=[{k: v for k, v in metadata.items() if v is not None} for _ in records],
             )
             return {"chunks": len(records), "country_doc_id": country_doc_id}
 

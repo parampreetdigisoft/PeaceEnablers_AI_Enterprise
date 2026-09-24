@@ -35,6 +35,20 @@ class VectorStore(ABC):
     ) -> list[str]:
         """Return nearest document texts for an embedding."""
 
+    def query_records(
+        self,
+        name: str,
+        embedding: list[float],
+        n_results: int = 5,
+        where: dict[str, Any] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Nearest hits with text, distance, and metadata. Does not create a collection."""
+        return [
+            {"text": text, "distance": None, "metadata": {}}
+            for text in self.query(name, embedding, n_results=n_results, where=where)
+            if text
+        ]
+
     @abstractmethod
     def upsert(
         self,

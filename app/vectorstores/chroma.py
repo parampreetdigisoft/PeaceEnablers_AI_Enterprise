@@ -47,17 +47,46 @@ class ChromaVectorStore(VectorStore):
         n_results: int = 5,
         where: dict[str, Any] | None = None,
     ) -> list[str]:
+        return [
+            record["text"]
+            for record in self.query_records(name, embedding, n_results=n_results, where=where)
+        ]
+
+    def query_records(
+        self,
+        name: str,
+        embedding: list[float],
+        n_results: int = 5,
+        where: dict[str, Any] | None = None,
+    ) -> list[dict[str, Any]]:
         try:
-            col = self._collection(name)
+            self._ensure()
+            # get_collection does not create an empty collection for a country
+            # that has never had a document.
+            col = self._client.get_collection(name=name)
             kwargs: dict[str, Any] = {
                 "query_embeddings": [embedding],
-                "n_results": n_results,
+                "n_results": max(1, n_results),
+                "include": ["documents", "metadatas", "distances"],
             }
             if where:
                 kwargs["where"] = where
             result = col.query(**kwargs)
-            docs = (result.get("documents") or [[]])[0]
-            return [d for d in docs if d]
+            docs = (result.get("documents") or [[]])[0] or []
+            metas = (result.get("metadatas") or [[]])[0] or []
+            distances = (result.get("distances") or [[]])[0] or []
+            records: list[dict[str, Any]] = []
+            for idx, text in enumerate(docs):
+                if not text:
+                    continue
+                records.append(
+                    {
+                        "text": text,
+                        "distance": distances[idx] if idx < len(distances) else None,
+                        "metadata": metas[idx] if idx < len(metas) and metas[idx] else {},
+                    }
+                )
+            return records
         except Exception as exc:
             logger.warning("Vector query failed: %s", exc)
             return []
